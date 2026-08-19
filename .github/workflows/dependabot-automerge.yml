@@ -49,9 +49,8 @@ jobs:
           private-key: ${{ secrets.AUTOMERGE_APP_PRIVATE_KEY }}
 
       # `--auto` queues the merge behind whatever required status checks the branch
-      # ruleset defines, rather than merging immediately. On a ruleset with no required
-      # checks configured — as on this repo's `main` today — there's nothing to queue
-      # behind, so the merge lands as soon as this step runs.
+      # ruleset defines, rather than merging immediately. `main`'s ruleset requires
+      # `Lint Python`, so the merge waits for that to pass before landing.
       #
       # Gated on the mint step's outcome rather than on APP_ID. `outcome == 'success'`
       # subsumes the APP_ID check (an unset id leaves this 'skipped') and states the real

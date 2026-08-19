@@ -36,6 +36,7 @@ Call `init_logging()` once at application startup (e.g. in `main()`), then use
 from logger import get_logger, init_logging
 from pathlib import Path
 
+
 def main() -> None:
     init_logging(log_file=Path("logs/app.log"), level="DEBUG")
     log = get_logger(__name__)
@@ -47,6 +48,7 @@ def main() -> None:
 from logger import get_logger
 
 log = get_logger(__name__)
+
 
 def do_work() -> None:
     log.info("processing %d items", count)

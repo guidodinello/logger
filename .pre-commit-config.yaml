@@ -1,8 +1,8 @@
 # Baseline pre-commit config for a Python repo. Scoped down from a larger
 # project's config (module-boundary checks, security scanners, framework-
 # specific hooks) to the hygiene + formatting layer every Python repo wants
-# regardless of size — see docs/github-standard.md § CI/pre-commit baseline
-# for what's deliberately left out and why.
+# regardless of size — see claude-dotfiles/github-standard.md § CI/pre-commit
+# baseline for what's deliberately left out and why.
 #
 # Adopt: cp this file to .pre-commit-config.yaml at the repo root, adjust
 # `language_version`/pyupgrade's `--pyXY-plus` to match your actual Python

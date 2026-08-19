@@ -1,7 +1,7 @@
 # Auto-merges Dependabot's own PRs — patch/minor only, major stays manual.
 #
 # Requires a GitHub App to mint the actual merge token — see below for why,
-# and docs/github-standard.md § Dependabot for the exact setup steps
+# and claude-dotfiles/github-standard.md § Dependabot for the exact setup steps
 # (create the App, install it, add two Dependabot secrets). Without that
 # App configured, this workflow degrades gracefully: it reports "not
 # configured" and leaves the PR for a manual merge, rather than failing.
@@ -48,8 +48,10 @@ jobs:
           app-id: ${{ env.APP_ID }}
           private-key: ${{ secrets.AUTOMERGE_APP_PRIVATE_KEY }}
 
-      # `--auto` queues the merge behind the required CI check rather than merging
-      # immediately, so the branch ruleset still decides whether it lands.
+      # `--auto` queues the merge behind whatever required status checks the branch
+      # ruleset defines, rather than merging immediately. On a ruleset with no required
+      # checks configured — as on this repo's `main` today — there's nothing to queue
+      # behind, so the merge lands as soon as this step runs.
       #
       # Gated on the mint step's outcome rather than on APP_ID. `outcome == 'success'`
       # subsumes the APP_ID check (an unset id leaves this 'skipped') and states the real
@@ -76,12 +78,12 @@ jobs:
       - name: Report that auto-merge is not configured
         if: steps.app-token.outcome == 'skipped'
         run: |
-          echo "::notice title=Dependabot auto-merge not configured::AUTOMERGE_APP_ID is unset, so this PR will not auto-merge. Merge it by hand — that does trigger a deploy."
+          echo "::notice title=Dependabot auto-merge not configured::AUTOMERGE_APP_ID is unset, so this PR will not auto-merge. Merge it by hand."
           {
             echo "### Dependabot auto-merge: not configured"
             echo
             echo "\`AUTOMERGE_APP_ID\` is unset, so this PR will **not** auto-merge."
-            echo "Merging by hand works and does trigger a deploy."
+            echo "Merging by hand works."
             echo
             echo "To enable automation, add both of these as **Dependabot** secrets"
             echo "(Settings → Secrets and variables → Dependabot), not Actions secrets —"

@@ -1,0 +1,41 @@
+# Baseline CI for a small/single-package Python repo. Runs only the ruff
+# format/lint hooks from .pre-commit-config.yaml as a required gate, since
+# pre-commit itself only runs locally and CI is the only place a required
+# check can actually enforce anything — the other hooks in that config
+# (trailing-whitespace, check-yaml, pyupgrade, etc.) are enforced nowhere
+# in CI.
+#
+# Lint only, no test job: this repo has no tests/ dir and no pytest in its
+# dev dependency group. Add a "Tests (Python)" job once that changes.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lint-python:
+    name: Lint Python
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
+      - name: Install dependencies
+        run: uv sync --dev
+
+      - name: ruff format check
+        run: uv run ruff format --check .
+
+      - name: ruff lint
+        run: uv run ruff check .

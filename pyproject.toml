@@ -22,5 +22,5 @@ ignore = ["SIM108"]
 
 [dependency-groups]
 dev = [
-    "ruff>=0.16.4",
+    "ruff>=0.16.6",
 ]

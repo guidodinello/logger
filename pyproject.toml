@@ -22,5 +22,6 @@ ignore = ["SIM108"]
 
 [dependency-groups]
 dev = [
+    "pre-commit>=4.7",
     "ruff>=0.17.1",
 ]

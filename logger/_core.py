@@ -2,7 +2,7 @@ import logging
 import sys
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
-from typing import Literal
+from typing import Literal, TextIO
 
 LogLevel = Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
 
@@ -28,18 +28,25 @@ class _ColorFormatter(logging.Formatter):
         return formatter.format(record)
 
 
-def init_logging(log_file: Path | None = None, level: LogLevel = "INFO") -> None:
+def init_logging(
+    log_file: Path | None = None,
+    level: LogLevel = "INFO",
+    stream: TextIO | None = None,
+) -> None:
     """Configure the root logger. Call once at application startup.
 
-    Installs a stdout StreamHandler and, if log_file is given, a 5 MB
-    RotatingFileHandler (3 backups).  No-op if handlers are already set up.
+    Installs a console StreamHandler on `stream` (stdout when omitted) and, if
+    log_file is given, a 5 MB RotatingFileHandler (3 backups). Pass
+    `stream=sys.stderr` in a CLI whose stdout carries its results, so log lines
+    never mix into them. No-op if handlers are already set up.
     """
     root = logging.getLogger()
     if root.handlers:
         return
 
-    sh = logging.StreamHandler(sys.stdout)
-    sh.setFormatter(_ColorFormatter() if sys.stdout.isatty() else logging.Formatter(_CONSOLE_FMT))
+    console = sys.stdout if stream is None else stream
+    sh = logging.StreamHandler(console)
+    sh.setFormatter(_ColorFormatter() if console.isatty() else logging.Formatter(_CONSOLE_FMT))
     root.addHandler(sh)
 
     if log_file is not None:

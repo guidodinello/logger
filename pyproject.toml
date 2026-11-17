@@ -23,5 +23,12 @@ ignore = ["SIM108"]
 [dependency-groups]
 dev = [
     "pre-commit>=4.7",
+    "pytest>=9",
     "ruff>=0.17.4",
 ]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# pytest's logging plugin puts capture handlers on the root logger during each
+# test, which makes init_logging a no-op; these tests need a bare root logger.
+addopts = ["-p", "no:logging"]

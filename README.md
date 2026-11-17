@@ -1,11 +1,11 @@
 # logger
 
-Minimal stdlib logging setup for Python projects — stdout + rotating file, one `init_logging()` call.
+Minimal stdlib logging setup for Python projects — console + rotating file, one `init_logging()` call.
 
 ## Features
 
 - Configures the root logger once at startup
-- stdout `StreamHandler` always active
+- Console `StreamHandler` always active, on stdout unless you pass another stream
 - Optional 5 MB `RotatingFileHandler` (3 backups)
 - `get_logger(name)` — thin wrapper around `logging.getLogger`
 - No dependencies beyond the stdlib
@@ -54,12 +54,20 @@ def do_work() -> None:
     log.info("processing %d items", count)
 ```
 
-### `init_logging(log_file, level)`
+### `init_logging(log_file, level, stream)`
 
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
-| `log_file` | `Path \| None` | `None` | Path for the rotating log file. Omit for stdout only. |
+| `log_file` | `Path \| None` | `None` | Path for the rotating log file. Omit for console only. |
 | `level` | `str` | `"INFO"` | Root log level (`"DEBUG"`, `"INFO"`, `"WARNING"`, …). |
+| `stream` | `TextIO \| None` | `None` | Console stream. `None` means stdout. |
+
+In a CLI whose stdout is its output (a table, JSON for another program), pass
+`stream=sys.stderr` so log lines never end up in that output:
+
+```python
+init_logging(stream=sys.stderr)
+```
 
 No-op if the root logger already has handlers — safe to call in tests or libraries that
 call `init_logging` themselves.
@@ -74,4 +82,5 @@ call `init_logging` themselves.
 
 ```bash
 uv run ruff check --fix .   # lint
+uv run pytest               # tests
 ```

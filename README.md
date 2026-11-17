@@ -12,18 +12,19 @@ Minimal stdlib logging setup for Python projects — console + rotating file, on
 
 ## Installation
 
-```bash
-uv pip install -e /path/to/logger
-```
-
-Or add it as a local dependency in `pyproject.toml`:
+Add it as a git dependency in `pyproject.toml`:
 
 ```toml
 [project]
-dependencies = [
-    "logger @ file:///path/to/logger",
-]
+dependencies = ["logger"]
+
+[tool.uv.sources]
+# uv.lock pins the exact commit; upgrade with `uv lock --upgrade-package logger`.
+logger = { git = "https://github.com/guidodinello/logger", branch = "main" }
 ```
+
+A `file://` path only resolves on the machine that has the checkout, so CI and other
+machines can't install it.
 
 Requires Python 3.13+.
 

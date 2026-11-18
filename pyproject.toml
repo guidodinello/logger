@@ -24,7 +24,7 @@ ignore = ["SIM108"]
 dev = [
     "pre-commit>=4.7",
     "pytest>=9",
-    "ruff>=0.17.4",
+    "ruff>=0.17.5",
 ]
 
 [tool.pytest.ini_options]
